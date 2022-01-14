@@ -23,19 +23,44 @@ app.use(bodyParser.urlencoded({
 extended: true
 }));
 
+const userSchema = new mongoose.Schema({
+  email: String,
+  password: String
+});
+const secret = "ThesecretEncryptCode";
+
+userSchema.plugin(encrypt, {secret: secret, encryptedFields: ["password"]});
+
+
+const User = new mongoose.model("User", userSchema);
+
+
 
 //this method is used when there is a get request incoming to the database from client and we specify what gets sent
 app.get("/", function(req, res){
   //Sending the client browser some information
-  res.send("home");
+  res.render("home");
 });
 app.get("/login", function(req, res){
-  res.send("login");
+  res.render("login");
 });
-app.get("register", function(req ,res){
-  res.send("register");
+app.get("/register", function(req ,res){
+  res.render("register");
 });
 
+app.post("/register", function(req, res){
+  const newUser = new User({
+    email: req.body.username,
+    password: req.body.password
+  });
+  newUser.save(function(err){
+    if(!err){
+      res.render("secrets");
+    }else{
+      res.send(err);
+    }
+  });
+});
 
 //This method hosts website on a port or url
 app.listen(3000, function(){
