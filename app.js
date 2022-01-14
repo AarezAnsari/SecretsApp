@@ -1,6 +1,6 @@
 //Initiating express to use in this file
 const express = require("express");
-
+require("dotenv").config();
 //An express object created to use bodyParser functions
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -27,9 +27,9 @@ const userSchema = new mongoose.Schema({
   email: String,
   password: String
 });
-const secret = "ThesecretEncryptCode";
 
-userSchema.plugin(encrypt, {secret: secret, encryptedFields: ["password"]});
+
+userSchema.plugin(encrypt, {secret: process.env.SECRET, encryptedFields: ["password"]});
 
 
 const User = new mongoose.model("User", userSchema);
