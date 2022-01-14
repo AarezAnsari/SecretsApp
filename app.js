@@ -62,6 +62,23 @@ app.post("/register", function(req, res){
   });
 });
 
+app.post("/login", function(req, res){
+  const user = req.body.username;
+  const pass = req.body.password;
+
+  User.findOne({email: user}, function(err, found){
+    if(err){
+      console.log(err);
+    }else{
+      if(found){
+        if(found.password === pass){
+          res.render("secrets");
+        }
+      }
+    }
+  });
+});
+
 //This method hosts website on a port or url
 app.listen(3000, function(){
   console.log("This server started running on port 3000");
